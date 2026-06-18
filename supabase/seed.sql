@@ -1,0 +1,5 @@
+-- Seed de datos de ejemplo para desarrollo local.
+--
+-- IMPORTANTE: ningún valor de este archivo es normativo (escalas, alícuotas,
+-- topes, etc.). Se completa en el hito de "modelo de datos" junto con las
+-- migraciones. No usar estos datos para liquidar sueldos reales.
