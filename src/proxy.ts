@@ -3,10 +3,13 @@ import { NextResponse, type NextRequest } from "next/server";
 
 /**
  * Next.js 16 renombró `middleware.ts` a `proxy.ts` (export `proxy` en vez de
- * `middleware`). Acá solo se refresca la sesión de Supabase en cada request;
- * la autorización por rol se verifica además en cada Server Action/página,
- * no únicamente acá (ver guía de Next.js sobre Proxy y seguridad de datos).
+ * `middleware`). Acá se refresca la sesión de Supabase y se redirige a /login
+ * si no hay usuario; la autorización por rol se verifica además en cada
+ * Server Action/página, no únicamente acá (ver guía de Next.js sobre Proxy y
+ * seguridad de datos).
  */
+const RUTAS_PUBLICAS = new Set(["/", "/login"]);
+
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
 
@@ -31,7 +34,20 @@ export async function proxy(request: NextRequest) {
     }
   );
 
-  await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
+  const { pathname } = request.nextUrl;
+
+  if (!user && !RUTAS_PUBLICAS.has(pathname)) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    return NextResponse.redirect(url);
+  }
+
+  if (user && pathname === "/login") {
+    const url = request.nextUrl.clone();
+    url.pathname = "/empresas";
+    return NextResponse.redirect(url);
+  }
 
   return response;
 }
