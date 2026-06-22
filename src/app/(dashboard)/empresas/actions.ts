@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { getCurrentProfile } from "@/lib/auth/current-profile";
 import { esCuitValido, normalizarCuit } from "@/lib/cuit";
+import { valoresDeFormulario } from "@/lib/form-values";
 import {
   actualizarEmpresa,
   cambiarEstadoEmpresa,
@@ -13,6 +14,7 @@ import {
 
 export interface EmpresaFormState {
   error?: string;
+  values?: Record<string, string>;
 }
 
 const SIN_PERMISOS = "No tenés permisos para hacer esto.";
@@ -50,10 +52,10 @@ export async function crearEmpresaAction(
   if (profile?.rol !== "administrador") return { error: SIN_PERMISOS };
 
   const { data, error } = parseEmpresaForm(formData);
-  if (error) return { error };
+  if (error) return { error, values: valoresDeFormulario(formData) };
 
   const result = await crearEmpresa(data!);
-  if ("error" in result) return { error: result.error };
+  if ("error" in result) return { error: result.error, values: valoresDeFormulario(formData) };
 
   revalidatePath("/empresas");
   redirect("/empresas");
@@ -68,10 +70,10 @@ export async function actualizarEmpresaAction(
   if (profile?.rol !== "administrador") return { error: SIN_PERMISOS };
 
   const { data, error } = parseEmpresaForm(formData);
-  if (error) return { error };
+  if (error) return { error, values: valoresDeFormulario(formData) };
 
   const result = await actualizarEmpresa(id, data!);
-  if (result.error) return { error: result.error };
+  if (result.error) return { error: result.error, values: valoresDeFormulario(formData) };
 
   revalidatePath("/empresas");
   redirect("/empresas");

@@ -17,24 +17,37 @@ const initialState: EmpresaFormState = {};
 
 export function EmpresaForm({ action, empresa, submitLabel }: EmpresaFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
+  const v = state.values ?? {};
 
   return (
     <form action={formAction} className="flex max-w-lg flex-col gap-4">
-      <Campo id="razonSocial" label="Razón social" defaultValue={empresa?.razonSocial} required />
+      <Campo id="razonSocial" label="Razón social" defaultValue={v.razonSocial ?? empresa?.razonSocial} required />
       <Campo
         id="cuit"
         label="CUIT"
-        defaultValue={empresa?.cuit}
+        defaultValue={v.cuit ?? empresa?.cuit}
         required
         placeholder="20-12345678-3"
       />
-      <Campo id="domicilio" label="Domicilio" defaultValue={empresa?.domicilio ?? ""} />
-      <Campo id="actividad" label="Actividad" defaultValue={empresa?.actividad ?? ""} />
-      <Campo id="artCompania" label="ART — Compañía" defaultValue={empresa?.artCompania ?? ""} />
-      <Campo id="artNumeroContrato" label="ART — N° de contrato" defaultValue={empresa?.artNumeroContrato ?? ""} />
+      <Campo id="domicilio" label="Domicilio" defaultValue={v.domicilio ?? empresa?.domicilio ?? ""} />
+      <Campo id="actividad" label="Actividad" defaultValue={v.actividad ?? empresa?.actividad ?? ""} />
+      <Campo
+        id="artCompania"
+        label="ART — Compañía"
+        defaultValue={v.artCompania ?? empresa?.artCompania ?? ""}
+      />
+      <Campo
+        id="artNumeroContrato"
+        label="ART — N° de contrato"
+        defaultValue={v.artNumeroContrato ?? empresa?.artNumeroContrato ?? ""}
+      />
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="tipoEmpleador">Tipo de empleador</Label>
-        <Input id="tipoEmpleador" name="tipoEmpleador" defaultValue={empresa?.tipoEmpleador ?? "GENERAL"} />
+        <Input
+          id="tipoEmpleador"
+          name="tipoEmpleador"
+          defaultValue={v.tipoEmpleador ?? empresa?.tipoEmpleador ?? "GENERAL"}
+        />
         <p className="text-xs text-muted-foreground">
           Clave para resolver la alícuota de contribuciones patronales (Dec. 814/01) — los valores posibles se
           confirman junto con el estudio en el módulo de Parámetros.

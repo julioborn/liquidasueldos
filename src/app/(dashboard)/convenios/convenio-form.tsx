@@ -17,19 +17,26 @@ const initialState: ConvenioFormState = {};
 
 export function ConvenioForm({ action, convenio, submitLabel }: ConvenioFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
+  const v = state.values ?? {};
 
   return (
     <form action={formAction} className="flex max-w-lg flex-col gap-4">
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="codigo">Código</Label>
-        <Input id="codigo" name="codigo" defaultValue={convenio?.codigo} required placeholder="345/2002" />
+        <Input
+          id="codigo"
+          name="codigo"
+          defaultValue={v.codigo ?? convenio?.codigo}
+          required
+          placeholder="345/2002"
+        />
       </div>
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="nombre">Nombre</Label>
         <Input
           id="nombre"
           name="nombre"
-          defaultValue={convenio?.nombre}
+          defaultValue={v.nombre ?? convenio?.nombre}
           required
           placeholder="Ej: Estaciones de servicio (SOESGPyLA / FAENI)"
         />
@@ -39,7 +46,7 @@ export function ConvenioForm({ action, convenio, submitLabel }: ConvenioFormProp
         <Input
           id="jurisdiccion"
           name="jurisdiccion"
-          defaultValue={convenio?.jurisdiccion ?? ""}
+          defaultValue={v.jurisdiccion ?? convenio?.jurisdiccion ?? ""}
           placeholder="Santa Fe"
         />
       </div>

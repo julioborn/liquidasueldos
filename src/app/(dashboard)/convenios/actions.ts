@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { getCurrentProfile } from "@/lib/auth/current-profile";
+import { valoresDeFormulario } from "@/lib/form-values";
 import {
   actualizarConvenio,
   cambiarEstadoConvenio,
@@ -12,6 +13,7 @@ import {
 
 export interface ConvenioFormState {
   error?: string;
+  values?: Record<string, string>;
 }
 
 const SIN_PERMISOS = "No tenés permisos para hacer esto.";
@@ -35,10 +37,10 @@ export async function crearConvenioAction(
   if (profile?.rol !== "administrador") return { error: SIN_PERMISOS };
 
   const { data, error } = parseConvenioForm(formData);
-  if (error) return { error };
+  if (error) return { error, values: valoresDeFormulario(formData) };
 
   const result = await crearConvenio(data!);
-  if ("error" in result) return { error: result.error };
+  if ("error" in result) return { error: result.error, values: valoresDeFormulario(formData) };
 
   revalidatePath("/convenios");
   redirect("/convenios");
@@ -53,10 +55,10 @@ export async function actualizarConvenioAction(
   if (profile?.rol !== "administrador") return { error: SIN_PERMISOS };
 
   const { data, error } = parseConvenioForm(formData);
-  if (error) return { error };
+  if (error) return { error, values: valoresDeFormulario(formData) };
 
   const result = await actualizarConvenio(id, data!);
-  if (result.error) return { error: result.error };
+  if (result.error) return { error: result.error, values: valoresDeFormulario(formData) };
 
   revalidatePath("/convenios");
   revalidatePath(`/convenios/${id}`);

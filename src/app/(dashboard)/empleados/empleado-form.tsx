@@ -38,7 +38,8 @@ export function EmpleadoForm({
   submitLabel,
 }: EmpleadoFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const [convenioId, setConvenioId] = useState(empleado?.convenioId ?? "");
+  const v = state.values ?? {};
+  const [convenioId, setConvenioId] = useState(v.convenioId ?? empleado?.convenioId ?? "");
   const categoriasDelConvenio = categorias.filter((c) => c.convenioId === convenioId);
 
   return (
@@ -46,7 +47,12 @@ export function EmpleadoForm({
       <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="empresaId">Empresa</Label>
-          <NativeSelect id="empresaId" name="empresaId" defaultValue={empleado?.empresaId ?? ""} required>
+          <NativeSelect
+            id="empresaId"
+            name="empresaId"
+            defaultValue={v.empresaId ?? empleado?.empresaId ?? ""}
+            required
+          >
             <option value="" disabled>
               Seleccionar...
             </option>
@@ -59,40 +65,62 @@ export function EmpleadoForm({
         </div>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="legajo">Legajo</Label>
-          <Input id="legajo" name="legajo" defaultValue={empleado?.legajo} required />
+          <Input id="legajo" name="legajo" defaultValue={v.legajo ?? empleado?.legajo} required />
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="apellido">Apellido</Label>
-          <Input id="apellido" name="apellido" defaultValue={empleado?.apellido} required />
+          <Input id="apellido" name="apellido" defaultValue={v.apellido ?? empleado?.apellido} required />
         </div>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="nombre">Nombre</Label>
-          <Input id="nombre" name="nombre" defaultValue={empleado?.nombre} required />
+          <Input id="nombre" name="nombre" defaultValue={v.nombre ?? empleado?.nombre} required />
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="cuil">CUIL</Label>
-          <Input id="cuil" name="cuil" defaultValue={empleado?.cuil} required placeholder="20-12345678-3" />
+          <Input
+            id="cuil"
+            name="cuil"
+            defaultValue={v.cuil ?? empleado?.cuil}
+            required
+            placeholder="20-12345678-3"
+          />
         </div>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="fechaNacimiento">Fecha de nacimiento</Label>
-          <Input id="fechaNacimiento" name="fechaNacimiento" type="date" defaultValue={empleado?.fechaNacimiento ?? ""} />
+          <Input
+            id="fechaNacimiento"
+            name="fechaNacimiento"
+            type="date"
+            defaultValue={v.fechaNacimiento ?? empleado?.fechaNacimiento ?? ""}
+          />
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="fechaIngreso">Fecha de ingreso</Label>
-          <Input id="fechaIngreso" name="fechaIngreso" type="date" defaultValue={empleado?.fechaIngreso} required />
+          <Input
+            id="fechaIngreso"
+            name="fechaIngreso"
+            type="date"
+            defaultValue={v.fechaIngreso ?? empleado?.fechaIngreso}
+            required
+          />
         </div>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="fechaEgreso">Fecha de egreso</Label>
-          <Input id="fechaEgreso" name="fechaEgreso" type="date" defaultValue={empleado?.fechaEgreso ?? ""} />
+          <Input
+            id="fechaEgreso"
+            name="fechaEgreso"
+            type="date"
+            defaultValue={v.fechaEgreso ?? empleado?.fechaEgreso ?? ""}
+          />
         </div>
       </div>
 
@@ -118,7 +146,7 @@ export function EmpleadoForm({
           <NativeSelect
             id="categoriaId"
             name="categoriaId"
-            defaultValue={empleado?.categoriaId ?? ""}
+            defaultValue={v.categoriaId ?? empleado?.categoriaId ?? ""}
             disabled={!convenioId}
           >
             <option value="">{convenioId ? "Sin asignar" : "Elegí un convenio primero"}</option>
@@ -136,7 +164,7 @@ export function EmpleadoForm({
         <NativeSelect
           id="modalidadContratacion"
           name="modalidadContratacion"
-          defaultValue={empleado?.modalidadContratacion ?? "TIEMPO_INDETERMINADO"}
+          defaultValue={v.modalidadContratacion ?? empleado?.modalidadContratacion ?? "TIEMPO_INDETERMINADO"}
         >
           {MODALIDADES.map((m) => (
             <option key={m.value} value={m.value}>
@@ -149,17 +177,17 @@ export function EmpleadoForm({
       <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="banco">Banco</Label>
-          <Input id="banco" name="banco" defaultValue={empleado?.banco ?? ""} />
+          <Input id="banco" name="banco" defaultValue={v.banco ?? empleado?.banco ?? ""} />
         </div>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="cbu">CBU</Label>
-          <Input id="cbu" name="cbu" defaultValue={empleado?.cbu ?? ""} />
+          <Input id="cbu" name="cbu" defaultValue={v.cbu ?? empleado?.cbu ?? ""} />
         </div>
       </div>
 
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="domicilio">Domicilio</Label>
-        <Input id="domicilio" name="domicilio" defaultValue={empleado?.domicilio ?? ""} />
+        <Input id="domicilio" name="domicilio" defaultValue={v.domicilio ?? empleado?.domicilio ?? ""} />
       </div>
 
       {state.error && <p className="text-sm text-destructive">{state.error}</p>}

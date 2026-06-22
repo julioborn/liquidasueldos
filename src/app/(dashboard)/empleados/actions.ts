@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { getCurrentProfile } from "@/lib/auth/current-profile";
 import { esCuilValido, normalizarCuil } from "@/lib/cuit";
+import { valoresDeFormulario } from "@/lib/form-values";
 import {
   actualizarEmpleado,
   cambiarEstadoEmpleado,
@@ -14,6 +15,7 @@ import {
 
 export interface EmpleadoFormState {
   error?: string;
+  values?: Record<string, string>;
 }
 
 const SIN_PERMISOS = "No tenés permisos para hacer esto.";
@@ -67,10 +69,10 @@ export async function crearEmpleadoAction(
   if (profile?.rol !== "administrador") return { error: SIN_PERMISOS };
 
   const { data, error } = parseEmpleadoForm(formData);
-  if (error) return { error };
+  if (error) return { error, values: valoresDeFormulario(formData) };
 
   const result = await crearEmpleado(data!);
-  if ("error" in result) return { error: result.error };
+  if ("error" in result) return { error: result.error, values: valoresDeFormulario(formData) };
 
   revalidatePath("/empleados");
   redirect("/empleados");
@@ -85,10 +87,10 @@ export async function actualizarEmpleadoAction(
   if (profile?.rol !== "administrador") return { error: SIN_PERMISOS };
 
   const { data, error } = parseEmpleadoForm(formData);
-  if (error) return { error };
+  if (error) return { error, values: valoresDeFormulario(formData) };
 
   const result = await actualizarEmpleado(id, data!);
-  if (result.error) return { error: result.error };
+  if (result.error) return { error: result.error, values: valoresDeFormulario(formData) };
 
   revalidatePath("/empleados");
   redirect("/empleados");
