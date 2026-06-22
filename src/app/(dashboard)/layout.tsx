@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentProfile } from "@/lib/auth/current-profile";
 import { logout } from "./actions";
 
 const NAV = [
@@ -13,16 +13,13 @@ const NAV = [
 ];
 
 export default async function DashboardLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const profile = await getCurrentProfile();
 
   // El proxy ya redirige a /login sin sesión; este chequeo es la segunda
   // capa (cada página/Server Action verifica por su cuenta, no solo el proxy).
-  if (!user) {
+  if (!profile) {
     redirect("/login");
   }
-
-  const { data: profile } = await supabase.from("profiles").select("nombre, rol").eq("id", user.id).single();
 
   return (
     <div className="flex flex-1">
@@ -37,7 +34,7 @@ export default async function DashboardLayout({ children }: Readonly<{ children:
         </nav>
         <div className="mt-auto flex flex-col gap-2 pt-4 text-sm">
           <p className="truncate text-muted-foreground">
-            {profile?.nombre ?? user.email} — {profile?.rol ?? "sin rol"}
+            {profile.nombre} — {profile.rol}
           </p>
           <form action={logout}>
             <button type="submit" className="text-left hover:underline">
