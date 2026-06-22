@@ -45,6 +45,20 @@ export async function listarCategorias(convenioId: string): Promise<CategoriaCon
   return (data as CategoriaConvenioRow[]).map(mapRow);
 }
 
+/** Todas las categorías de todos los convenios, para filtrar convenio→categoría sin N+1 queries. */
+export async function listarTodasLasCategorias(): Promise<CategoriaConvenio[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("categorias_convenio")
+    .select("id, convenio_id, codigo, nombre, orden")
+    .order("convenio_id")
+    .order("orden")
+    .order("codigo");
+
+  if (error) throw new Error(error.message);
+  return (data as CategoriaConvenioRow[]).map(mapRow);
+}
+
 export async function obtenerCategoria(id: string): Promise<CategoriaConvenio | null> {
   const supabase = await createClient();
   const { data, error } = await supabase

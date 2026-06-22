@@ -30,3 +30,8 @@ export function esCuitValido(input: string): boolean {
 
   return verificador === Number(digitos[10]);
 }
+
+/** El CUIL (persona física) usa exactamente el mismo algoritmo que el CUIT. */
+export const normalizarCuil = normalizarCuit;
+export const formatearCuil = formatearCuit;
+export const esCuilValido = esCuitValido;
