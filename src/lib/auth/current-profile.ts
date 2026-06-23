@@ -30,3 +30,12 @@ export async function getCurrentProfile(): Promise<Profile | null> {
     rol: profile.rol as Rol,
   };
 }
+
+/**
+ * Períodos/novedades/liquidaciones los puede escribir administrador o
+ * liquidador (a diferencia de los maestros y parámetros, que son solo
+ * administrador) — coincide con las policies de RLS de esas tablas.
+ */
+export function esAdminOLiquidador(rol: Rol | undefined): boolean {
+  return rol === "administrador" || rol === "liquidador";
+}

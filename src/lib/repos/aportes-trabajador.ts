@@ -1,4 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
+import { TablaParametrica, type FechaISO } from "@/motor";
+import type { AportesTrabajador } from "@/motor";
 
 export interface AporteTrabajador {
   id: string;
@@ -95,4 +97,18 @@ export async function eliminarAporteTrabajador(id: string): Promise<{ error?: st
   const { error } = await supabase.from("aportes_trabajador").delete().eq("id", id);
   if (error) return { error: error.message };
   return {};
+}
+
+/** Aportes nacionales vigentes a una fecha, en el formato que espera el motor. */
+export async function resolverAportesTrabajador(fecha: FechaISO): Promise<AportesTrabajador> {
+  const filas = await listarAportesTrabajador();
+  const tabla = new TablaParametrica<AportesTrabajador>("aportes_trabajador");
+  for (const fila of filas) {
+    tabla.agregar(fila.vigenciaDesde, fila.vigenciaHasta, {
+      jubilacion: fila.jubilacionPct,
+      ley19032: fila.ley19032Pct,
+      obraSocial: fila.obraSocialPct,
+    });
+  }
+  return tabla.enFecha(fecha);
 }

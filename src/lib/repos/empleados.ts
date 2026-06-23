@@ -123,6 +123,21 @@ export async function listarEmpleados(): Promise<Empleado[]> {
   return (data as unknown as EmpleadoRow[]).map(mapRow);
 }
 
+/** Empleados activos de una empresa, para cargar novedades de un período. */
+export async function listarEmpleadosActivosPorEmpresa(empresaId: string): Promise<Empleado[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("empleados")
+    .select(SELECT_CON_JOINS)
+    .eq("empresa_id", empresaId)
+    .eq("estado", "ACTIVO")
+    .order("apellido")
+    .order("nombre");
+
+  if (error) throw new Error(error.message);
+  return (data as unknown as EmpleadoRow[]).map(mapRow);
+}
+
 export async function obtenerEmpleado(id: string): Promise<Empleado | null> {
   const supabase = await createClient();
   const { data, error } = await supabase
