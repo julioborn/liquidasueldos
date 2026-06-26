@@ -39,7 +39,7 @@ where id = '00000000-0000-0000-0000-000000000001';
 insert into convenios (id, codigo, nombre, jurisdiccion) values (
   '00000000-0000-0000-0000-000000000010',
   '345/2002',
-  'SOESGPyLA / FAENI — Estaciones de servicio',
+  'SOESGPyLA / FAENI - Estaciones de servicio',
   'Santa Fe'
 );
 
